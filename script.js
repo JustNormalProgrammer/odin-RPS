@@ -18,25 +18,54 @@ function getHumanChoice(){
     if(!choices.includes(userChoice)) return "Ups! Something went wrong!"
     return userChoice.toLowerCase().trim()
 }
-function playRound(human, computer){
+function playRound(){
     if ((human.choice == 'rock' && computer.choice == 'scissors') ||
     (human.choice == 'scissors' && computer.choice  == 'paper') ||
     (human.choice == 'paper' && computer.choice  == 'rock')) {
         human.score++;
-        console.log('You win a round!')
-        return;
+    } else {
+    computer.score++;  
     }
-    computer.score++;
-    console.log('You lose a round');
-        
+    displayScore();
 }
-function play(numberOfRounds) {
-    for(let i = 0; i < numberOfRounds; i++) {
-        computer.choice= getComputerChoice();
-        human.choice = getHumanChoice();
-        playRound(human, computer);
+function displayScore(result){
+    const humanDisplay = document.querySelector('.human-score');
+    const computerDisplay = document.querySelector('.computer-score');
+    humanDisplay.textContent = human.score;
+    computerDisplay.textContent = computer.score;
+    if(result !==undefined) {
+        const message = document.querySelector('.final-message')
+        message.textContent = result;
+        reset();
     }
-    if(human.score ===computer.score) return "It's a tie!";
-    return human.score > computer.score ? "You win!" : "Ohhh! You lose!";
 }
-console.log(play(2));
+function reset(){
+    human.score = 0;
+    human.choice = null;
+    computer.score = 0;
+    computer.choice = null;
+}
+function play() {
+    playRound();
+    let result = '';
+    if(computer.score === 5 || human.score === 5){
+    human.score > computer.score ? result = "You win!" : result = "Ohhh! You lose!";
+    if(human.score === computer.score) result = "It's a tie!";
+    displayScore(result);
+    } else {
+        const message = document.querySelector('.final-message')
+        message.textContent = '';
+    }
+    
+}
+
+const buttons = document.querySelectorAll('button');
+
+
+buttons.forEach(button => {
+    button.addEventListener('click', () =>{
+        human.choice = button.id;
+        computer.choice = getComputerChoice();
+        play();
+    })
+})
